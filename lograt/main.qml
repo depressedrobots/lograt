@@ -19,7 +19,9 @@ Window {
         Column{
             Repeater {
                 id: __repeater
-                model: LogLinesModel {}
+                model: LogLinesModel {
+                    id: __model
+                }
 
                 Rectangle {
                     height: 50
@@ -27,10 +29,12 @@ Window {
                     border.color: "red"
                     color: "yellow"
                     Text {
-                        text: model.display
+                        text: model.display ? model.display : ""
                     }
                 }
             }
         }
     }
+
+    Component.onCompleted: __model.filename = "/Users/wojtek/Documents/log.txt"
 }
