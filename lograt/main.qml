@@ -1,5 +1,6 @@
 import QtQuick 2.11
 import QtQuick.Window 2.11
+import lograt 1.0
 
 Window {
     visible: true
@@ -18,12 +19,16 @@ Window {
         Column{
             Repeater {
                 id: __repeater
-                model: 10
+                model: LogLinesModel {}
+
                 Rectangle {
                     height: 50
                     width: 100
                     border.color: "red"
                     color: "yellow"
+                    Text {
+                        text: model.display
+                    }
                 }
             }
         }
