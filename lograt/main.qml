@@ -6,6 +6,7 @@ Window {
     visible: true
     width: 640
     height: 480
+    visibility: Window.Maximized
     title: qsTr("Lograt")
 
     Flickable {
