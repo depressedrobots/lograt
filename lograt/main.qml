@@ -8,6 +8,7 @@ Window {
     height: 480
     visibility: Window.Maximized
     title: qsTr("Lograt")
+    color: "black"
 
     Flickable {
         id: __flickable
@@ -24,14 +25,9 @@ Window {
                     id: __model
                 }
 
-                Rectangle {
-                    height: 50
-                    width: 100
-                    border.color: "red"
-                    color: "yellow"
-                    Text {
-                        text: model.display ? model.display : ""
-                    }
+                Text {
+                    color: "white"
+                    text: model.display ? model.display : ""
                 }
             }
         }
@@ -43,8 +39,10 @@ Window {
             var fileScheme = "file://"
             var filepath = drop.text
             console.log("dropped file " + filepath)
-            if(filepath.indexOf(fileScheme) === -1)
+            if(filepath.indexOf(fileScheme) === -1) {
+                console.log("file scheme not present. rejecting drop.")
                 return
+            }
 
             __model.filename = filepath.substring(fileScheme.length, filepath.length)
         }
