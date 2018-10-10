@@ -36,5 +36,16 @@ Window {
         }
     }
 
-    Component.onCompleted: __model.filename = "/Users/wojtek/Documents/log.txt"
+    DropArea {
+        anchors.fill: parent
+        onDropped: {
+            var fileScheme = "file://"
+            var filepath = drop.text
+            console.log("dropped file " + filepath)
+            if( filepath.indexOf(fileScheme) === -1)
+                return
+
+            __model.filename = filepath.substring(fileScheme.length, filepath.length)
+        }
+    }
 }
