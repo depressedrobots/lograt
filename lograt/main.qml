@@ -42,10 +42,18 @@ Window {
             var fileScheme = "file://"
             var filepath = drop.text
             console.log("dropped file " + filepath)
-            if( filepath.indexOf(fileScheme) === -1)
+            if(filepath.indexOf(fileScheme) === -1)
                 return
 
             __model.filename = filepath.substring(fileScheme.length, filepath.length)
         }
+    }
+
+    Component.onCompleted: {
+        // filename is a RootContext property
+        if(filename.length === 0)
+            return
+
+        __model.filename = filename
     }
 }
