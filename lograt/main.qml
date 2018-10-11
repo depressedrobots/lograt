@@ -23,17 +23,13 @@ Window {
         }
 
         TableViewColumn {
-            id: __textColumn
             role: "display"
             title: "text"
+            width: 600
         }
 
         model: LogLinesModel {
             id: __model
-            onRowsInserted: {
-                console.log("onRowsInserted")
-                __textColumn.resizeToContents()
-            }
         }
 
         style: TableViewStyle {
@@ -59,8 +55,6 @@ Window {
     }
 
     Component.onCompleted: {
-        filename = "/Users/wojtek/Documents/log.txt"
-        return
         // filename is a RootContext property
         if(filename.length === 0)
             return
