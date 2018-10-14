@@ -2,7 +2,9 @@
 #define LOGLINESMODEL_H
 
 #include <QAbstractListModel>
-#include <QRegularExpression>
+#include "config.h"
+
+using LogLine = QVector<QPair<QString, QString>>;
 
 class LogLinesModel : public QAbstractListModel
 {
@@ -21,13 +23,12 @@ signals:
 public slots:
 
 private slots:
-    void initConfig();
     void loadFile(const QString& filename);
 
 private:
     QString _filename;
-    QRegularExpression _regExp;
-    QVector<QStringList> _lines;
+    Config _config;
+    QVector<LogLine> _lines;
 };
 
 #endif // LOGLINESMODEL_H

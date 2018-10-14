@@ -1,0 +1,5 @@
+{
+	"scheme": "example",
+	"static_columns_regexp": "(?<level>^\\D{4})(?<timestamp>\\[.+\\])\\s(?<message>.+\\S)\\s+func=(?<func>.+)\\s+obj=(?<obj>\\S+)"
+}
+
