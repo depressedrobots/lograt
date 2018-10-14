@@ -5,8 +5,6 @@
 
 namespace
 {
-    const auto CONFIG_FILE_NAME = "lograt.conf";
-    const auto DEFAULT_MATCH_STRING = "(.*)";
 }
 
 LogLinesModel::LogLinesModel(QObject *parent) : QAbstractListModel(parent)
@@ -44,7 +42,7 @@ void LogLinesModel::loadFile(const QString& filename)
 
         auto captures = res.capturedTexts();
         captures.pop_front();   // the first one is the full match, not interesting
-        //newLines << captures;
+        newLines << captures;
     }
 
     file.close();
@@ -54,13 +52,35 @@ void LogLinesModel::loadFile(const QString& filename)
     endInsertRows();
 }
 
-int LogLinesModel::rowCount(const QModelIndex &parent) const
+QHash<int, QByteArray> LogLinesModel::roleNames() const
+{
+    auto roles = QHash<int, QByteArray>{};
+    auto count = 0;
+    for(const auto& role : _config.staticColumnsNames())
+    {
+        roles.insert(count, role.toUtf8());
+        count++;
+    }
+
+    return roles;
+}
+
+int LogLinesModel::columnCount(const QModelIndex& /*index*/ ) const
+{
+    return _config.staticColumnsNames().size();
+}
+
+int LogLinesModel::rowCount(const QModelIndex& /*parent*/) const
 {
     return _lines.size();
 }
 
-QVariant LogLinesModel::data(const QModelIndex &index, int /*role*/) const
+QVariant LogLinesModel::data(const QModelIndex &index, int role) const
 {
-    return {};
-    //return {_lines.at(index.row())};
+    return {_lines.at(index.row()).at(role)};
+}
+
+QString LogLinesModel::columnName(const int col) const
+{
+    return _config.staticColumnsNames().at(col);
 }

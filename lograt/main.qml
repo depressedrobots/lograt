@@ -16,20 +16,9 @@ Window {
         sortIndicatorVisible: true
         anchors.fill: parent
 
-        TableViewColumn {
-            role: "index"
-            title: "#"
-            width: 50
-        }
-
-        TableViewColumn {
-            role: "display"
-            title: "text"
-            width: 600
-        }
-
         model: LogLinesModel {
             id: __model
+            onRowsInserted: __tableview.updateColumns()
         }
 
         style: TableViewStyle {
@@ -37,6 +26,26 @@ Window {
             alternateBackgroundColor: "black"
             textColor: "white"
         }
+
+        Component {
+            id: columnComponent
+            TableViewColumn {
+                width: 50
+            }
+        }
+
+        function updateColumns() {
+                while(columnCount != 0) { // Remove existing columns first
+                  removeColumn(0);
+                }
+
+                for(var i = 0; i < __model.columnCount(0); i++)
+                {
+                  var col  = __model.columnName(i);
+                  console.log("found column: " + col);
+                  __tableview.addColumn(columnComponent.createObject(__tableview, { "role": col, "title": col}));
+                }
+              }
     }
 
     DropArea {

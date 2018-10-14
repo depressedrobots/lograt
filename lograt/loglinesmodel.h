@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 #include "config.h"
 
-using LogLine = QVector<QPair<QString, QString>>;
+using LogLine = QStringList;
 
 class LogLinesModel : public QAbstractListModel
 {
@@ -14,13 +14,15 @@ class LogLinesModel : public QAbstractListModel
 public:
     explicit LogLinesModel(QObject *parent = nullptr);
 
+public slots:
+    QHash<int, QByteArray> roleNames() const override;
+    int columnCount(const QModelIndex & = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QString columnName(const int col) const;
 
 signals:
     void filenameChanged(const QString& filename);
-
-public slots:
 
 private slots:
     void loadFile(const QString& filename);
