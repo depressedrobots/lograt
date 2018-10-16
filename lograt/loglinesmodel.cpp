@@ -84,3 +84,11 @@ QString LogLinesModel::columnName(const int col) const
 {
     return _config.staticColumnsNames().at(col);
 }
+
+int LogLinesModel::columnWidth(const int index) const
+{
+    if(index < 0 || index >= columnCount())
+        return 0;
+
+    return _config.columnWidths().at(index);
+}

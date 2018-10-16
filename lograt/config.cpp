@@ -1,6 +1,7 @@
 #include "config.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QFile>
 #include <QDebug>
 
@@ -9,7 +10,7 @@ namespace
     const auto DEFAULT_CONFIG_NAME = QString{"config.json"};
     const auto KEY_SCHEME = QString{"scheme"};
     const auto KEY_STATIC_COLUMNS_REGEXP = QString{"static_columns_regexp"};
-    const auto KEY_STATIC_COLUMNS_NAMES = QString{"static_columns_names"};
+    const auto KEY_STATIC_COLUMN_WIDTHS = QString{"static_columns_widths"};
 }
 
 Config::Config(QObject *parent) : QObject(parent) {}
@@ -71,5 +72,26 @@ void Config::open()
         _staticColumnsNames = _staticColumnsRegexp.namedCaptureGroups();
         if( !_staticColumnsNames.isEmpty())
             _staticColumnsNames.pop_front();
+    }
+
+    if( rootObj.contains(KEY_STATIC_COLUMN_WIDTHS))
+    {
+        const auto obj = rootObj.value(KEY_STATIC_COLUMN_WIDTHS);
+        if( !obj.isArray())
+            qDebug() << "found " << KEY_STATIC_COLUMN_WIDTHS << " but it wasn't an array";
+        else
+        {
+            _columnWidths.clear();
+            const auto arr = obj.toArray();
+            for(const auto& val : arr)
+            {
+                if( !val.isDouble())
+                {
+                    qDebug() << "value in " << KEY_STATIC_COLUMN_WIDTHS << " array is not a number: " << val;
+                    continue;
+                }
+                _columnWidths << val.toInt();
+            }
+        }
     }
 }

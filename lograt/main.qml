@@ -57,7 +57,7 @@ Window {
             for(var i = 0; i < __model.columnCount(0); i++)
             {
                 var col  = __model.columnName(i);
-                var newCol = columnComponent.createObject(__tableview, { "role": col, "title": col})
+                var newCol = columnComponent.createObject(__tableview, { "role": col, "title": col, width: __model.columnWidth(i)})
                 __tableview.addColumn(newCol);
             }
         }

@@ -20,6 +20,7 @@ public slots:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QString columnName(const int col) const;
+    int columnWidth(const int index) const;
 
 signals:
     void filenameChanged(const QString& filename);
