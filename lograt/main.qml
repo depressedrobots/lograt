@@ -25,27 +25,42 @@ Window {
             backgroundColor: "black";
             alternateBackgroundColor: "black"
             textColor: "white"
+            headerDelegate: Rectangle {
+                height: textItem.implicitHeight * 1.2
+                width: textItem.implicitWidth
+                color: "black"
+                Text {
+                    id: textItem
+                    anchors.fill: parent
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.leftMargin: 12
+                    text: styleData.value
+                    elide: Text.ElideRight
+                    font.bold: true
+                    color: "gray"
+                    renderType: Text.NativeRendering
+                }
+            }
         }
 
         Component {
             id: columnComponent
-            TableViewColumn {
-                width: 50
-            }
+            TableViewColumn {}
         }
 
         function updateColumns() {
-                while(columnCount != 0) { // Remove existing columns first
-                  removeColumn(0);
-                }
+            while(columnCount != 0) { // Remove existing columns first
+                removeColumn(0);
+            }
 
-                for(var i = 0; i < __model.columnCount(0); i++)
-                {
-                  var col  = __model.columnName(i);
-                  console.log("found column: " + col);
-                  __tableview.addColumn(columnComponent.createObject(__tableview, { "role": col, "title": col}));
-                }
-              }
+            for(var i = 0; i < __model.columnCount(0); i++)
+            {
+                var col  = __model.columnName(i);
+                var newCol = columnComponent.createObject(__tableview, { "role": col, "title": col})
+                __tableview.addColumn(newCol);
+            }
+        }
     }
 
     DropArea {
