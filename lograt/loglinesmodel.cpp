@@ -3,8 +3,14 @@
 #include <QDebug>
 #include <QFile>
 
+namespace
+{
+}
+
 LogLinesModel::LogLinesModel(QObject *parent) : QAbstractListModel(parent)
 {
+    _config.open();
+
     connect(this, &LogLinesModel::filenameChanged, this, &LogLinesModel::loadFile);
 }
 
@@ -24,11 +30,20 @@ void LogLinesModel::loadFile(const QString& filename)
         return;
     }
 
-    QStringList newLines;
+    QVector<LogLine> newLines;
 
     QTextStream in{&file};
     while(!in.atEnd())
-        newLines << in.readLine();
+    {
+        const auto str = in.readLine();
+        const auto res = _config.staticColumnsRegexp().match(str);
+        if( !res.hasMatch())
+            continue;
+
+        auto captures = res.capturedTexts();
+        captures.pop_front();   // the first one is the full match, not interesting
+        newLines << captures;
+    }
 
     file.close();
 
@@ -37,12 +52,43 @@ void LogLinesModel::loadFile(const QString& filename)
     endInsertRows();
 }
 
-int LogLinesModel::rowCount(const QModelIndex &parent) const
+QHash<int, QByteArray> LogLinesModel::roleNames() const
+{
+    auto roles = QHash<int, QByteArray>{};
+    auto count = 0;
+    for(const auto& role : _config.staticColumnsNames())
+    {
+        roles.insert(count, role.toUtf8());
+        count++;
+    }
+
+    return roles;
+}
+
+int LogLinesModel::columnCount(const QModelIndex& /*index*/ ) const
+{
+    return _config.staticColumnsNames().size();
+}
+
+int LogLinesModel::rowCount(const QModelIndex& /*parent*/) const
 {
     return _lines.size();
 }
 
-QVariant LogLinesModel::data(const QModelIndex &index, int /*role*/) const
+QVariant LogLinesModel::data(const QModelIndex &index, int role) const
 {
-    return {_lines.at(index.row())};
+    return {_lines.at(index.row()).at(role)};
+}
+
+QString LogLinesModel::columnName(const int col) const
+{
+    return _config.staticColumnsNames().at(col);
+}
+
+int LogLinesModel::columnWidth(const int index) const
+{
+    if(index < 0 || index >= columnCount())
+        return 0;
+
+    return _config.columnWidths().at(index);
 }

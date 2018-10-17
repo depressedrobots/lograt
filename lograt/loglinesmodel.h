@@ -2,6 +2,9 @@
 #define LOGLINESMODEL_H
 
 #include <QAbstractListModel>
+#include "config.h"
+
+using LogLine = QStringList;
 
 class LogLinesModel : public QAbstractListModel
 {
@@ -11,20 +14,24 @@ class LogLinesModel : public QAbstractListModel
 public:
     explicit LogLinesModel(QObject *parent = nullptr);
 
+public slots:
+    QHash<int, QByteArray> roleNames() const override;
+    int columnCount(const QModelIndex & = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QString columnName(const int col) const;
+    int columnWidth(const int index) const;
 
 signals:
     void filenameChanged(const QString& filename);
-
-public slots:
 
 private slots:
     void loadFile(const QString& filename);
 
 private:
     QString _filename;
-    QStringList _lines;
+    Config _config;
+    QVector<LogLine> _lines;
 };
 
 #endif // LOGLINESMODEL_H
