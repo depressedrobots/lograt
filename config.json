@@ -1,6 +1,6 @@
 {
 	"scheme": "example",
-	"static_columns_regexp": "(?<level>^\\D{4})(?<timestamp>\\[.+\\])\\s(?<message>.+\\S)\\s+func=(?<func>.+)\\s+obj=(?<obj>\\S+)",
-	"static_columns_widths": [50, 150, 400, 150, 150]
+	"static_columns_regexp": "(?<level>^\\D{4})(?<timestamp>\\[.+\\])\\s(?<message>.+\\S)\\s+func=(?<func>.+)\\s+obj=(?<obj>\\S+)(?<fields>.*$)",
+	"static_columns_widths": [50, 150, 400, 150, 150, 400]
 }
 
