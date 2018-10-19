@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QDebug>
 
+#include "columnconfig.h"
+
 namespace
 {
     const auto DEFAULT_CONFIG_NAME = QString{"config.json"};
@@ -68,30 +70,34 @@ void Config::open()
             return;
         }
 
-        // drop first name as it will be empty
-        _staticColumnsNames = _staticColumnsRegexp.namedCaptureGroups();
-        if( !_staticColumnsNames.isEmpty())
-            _staticColumnsNames.pop_front();
+        // drop first name will be empty
+        auto columnsNames = _staticColumnsRegexp.namedCaptureGroups();
+        if( columnsNames.size() < 2)
+        {
+            qDebug() << "no named groups found. default behavior not implemented, yet. Bailing out.";
+            return;
+        }
+        columnsNames.pop_front();
+
+        for( const auto& name : columnsNames)
+        {
+            auto col = new ColumnConfig(this);
+            col->setName(name);
+            _columns << col;
+        }
     }
 
-    if( rootObj.contains(KEY_STATIC_COLUMN_WIDTHS))
+    // parse individual ColumnConfigs
+    for(const auto col : _columns)
     {
-        const auto obj = rootObj.value(KEY_STATIC_COLUMN_WIDTHS);
-        if( !obj.isArray())
-            qDebug() << "found " << KEY_STATIC_COLUMN_WIDTHS << " but it wasn't an array";
-        else
+        if( !rootObj.contains(col->name()))
         {
-            _columnWidths.clear();
-            const auto arr = obj.toArray();
-            for(const auto& val : arr)
-            {
-                if( !val.isDouble())
-                {
-                    qDebug() << "value in " << KEY_STATIC_COLUMN_WIDTHS << " array is not a number: " << val;
-                    continue;
-                }
-                _columnWidths << val.toInt();
-            }
+            qDebug() << "no column config found for " << col->name() << ". Using default.";
+            col->setWidth(100);
+            continue;
         }
+
+        const auto obj = rootObj.value(col->name()).toObject();
+        col->setValues(obj);
     }
 }

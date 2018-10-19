@@ -5,6 +5,8 @@
 #include <QVector>
 #include <QRegularExpression>
 
+class ColumnConfig;
+
 class Config : public QObject
 {
     Q_OBJECT
@@ -12,8 +14,7 @@ public:
     explicit Config(QObject *parent = nullptr);
     QString scheme() const { return _scheme; }
     QRegularExpression staticColumnsRegexp() const { return _staticColumnsRegexp; }
-    QStringList staticColumnsNames() const { return _staticColumnsNames; }
-    QVector<int> columnWidths() const { return _columnWidths; }
+    QVector<ColumnConfig*> columns() const { return _columns; }
 
 signals:
     void configLoaded(const bool success);
@@ -24,8 +25,7 @@ public slots:
 private:
     QString _scheme;
     QRegularExpression _staticColumnsRegexp;
-    QStringList _staticColumnsNames;
-    QVector<int> _columnWidths;
+    QVector<ColumnConfig*> _columns;
 };
 
 #endif // CONFIG_H

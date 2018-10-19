@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QFile>
 
+#include "columnconfig.h"
+
 namespace
 {
 }
@@ -56,9 +58,9 @@ QHash<int, QByteArray> LogLinesModel::roleNames() const
 {
     auto roles = QHash<int, QByteArray>{};
     auto count = 0;
-    for(const auto& role : _config.staticColumnsNames())
+    for(const auto col : _config.columns())
     {
-        roles.insert(count, role.toUtf8());
+        roles.insert(count, col->name().toUtf8());
         count++;
     }
 
@@ -67,7 +69,7 @@ QHash<int, QByteArray> LogLinesModel::roleNames() const
 
 int LogLinesModel::columnCount(const QModelIndex& /*index*/ ) const
 {
-    return _config.staticColumnsNames().size();
+    return _config.columns().size();
 }
 
 int LogLinesModel::rowCount(const QModelIndex& /*parent*/) const
@@ -82,7 +84,7 @@ QVariant LogLinesModel::data(const QModelIndex &index, int role) const
 
 QString LogLinesModel::columnName(const int col) const
 {
-    return _config.staticColumnsNames().at(col);
+    return _config.columns().at(col)->name();
 }
 
 int LogLinesModel::columnWidth(const int index) const
@@ -90,5 +92,5 @@ int LogLinesModel::columnWidth(const int index) const
     if(index < 0 || index >= columnCount())
         return 0;
 
-    return _config.columnWidths().at(index);
+    return _config.columns().at(index)->width();
 }
