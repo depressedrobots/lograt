@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QPair>
 #include <QVector>
+#include <QRegularExpression>
 
 class ColumnConfig : public QObject
 {
@@ -19,12 +20,12 @@ public:
     int width() const { return _width; }
     void setWidth(const int width) { _width = width; }
 
-    QVector<QPair<QString, QString>> colors() const { return _colors; }
-
+public slots:
+    QString colorForString(const QString& str) const;
     void setValues(const QJsonObject& jsonObj);
 
 private:
     QString _name;
     int _width = 0;
-    QVector<QPair<QString, QString>> _colors;
+    QVector<QPair<QRegularExpression, QString>> _colors;
 };

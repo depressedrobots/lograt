@@ -4,6 +4,7 @@
 #include <QQmlContext>
 
 #include "loglinesmodel.h"
+#include "columnconfig.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<LogLinesModel>("lograt", 1, 0, "LogLinesModel");
+    qmlRegisterType<ColumnConfig>("lograt", 1, 0, "ColumnConfig");
 
     QQmlApplicationEngine engine;
     auto ctx = engine.rootContext();

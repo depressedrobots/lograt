@@ -5,6 +5,7 @@
 #include "config.h"
 
 using LogLine = QStringList;
+class ColumnConfig;
 
 class LogLinesModel : public QAbstractListModel
 {
@@ -19,8 +20,7 @@ public slots:
     int columnCount(const QModelIndex & = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QString columnName(const int col) const;
-    int columnWidth(const int index) const;
+    ColumnConfig* columnConfig(const int col) const;
 
 signals:
     void filenameChanged(const QString& filename);

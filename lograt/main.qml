@@ -45,9 +45,31 @@ Window {
             }
         }
 
+        itemDelegate: Item {
+            clip: true
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                color: __tableview.getColorForStr(styleData.column, styleData.value)
+                elide:Text.ElideRight
+                text: styleData.value
+            }
+        }
+
         Component {
             id: columnComponent
             TableViewColumn {}
+        }
+
+        rowDelegate: Item {
+            clip: true
+            Text {
+
+            }
+        }
+
+        function getColorForStr(columnIndex, string) {
+            var config = __model.columnConfig(columnIndex)
+            return config.colorForString(string)
         }
 
         function updateColumns() {
@@ -57,11 +79,11 @@ Window {
 
             for(var i = 0; i < __model.columnCount(0); i++)
             {
-                var col  = __model.columnName(i);
+                var colConfig = __model.columnConfig(i)
                 var newCol = columnComponent.createObject(__tableview, {
-                                                              role: col,
-                                                              title: col,
-                                                              width: __model.columnWidth(i)
+                                                              role: colConfig.name,
+                                                              title: colConfig.name,
+                                                              width: colConfig.width
                                                           })
                 __tableview.addColumn(newCol)
             }

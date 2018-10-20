@@ -82,15 +82,10 @@ QVariant LogLinesModel::data(const QModelIndex &index, int role) const
     return {_lines.at(index.row()).at(role)};
 }
 
-QString LogLinesModel::columnName(const int col) const
+ColumnConfig* LogLinesModel::columnConfig(const int col) const
 {
-    return _config.columns().at(col)->name();
-}
+    if( col >= _config.columns().size())
+        return nullptr;
 
-int LogLinesModel::columnWidth(const int index) const
-{
-    if(index < 0 || index >= columnCount())
-        return 0;
-
-    return _config.columns().at(index)->width();
+    return _config.columns().at(col);
 }

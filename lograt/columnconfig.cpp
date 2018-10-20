@@ -10,6 +10,8 @@ namespace
     const auto KEY_COLORS = "colors";
     const auto KEY_COLOR = "color";
     const auto KEY_REGEXP = "regexp";
+
+    const auto DEFAULT_COLOR = "white";
 }
 
 void ColumnConfig::setValues(const QJsonObject& jsonObj)
@@ -29,10 +31,22 @@ void ColumnConfig::setValues(const QJsonObject& jsonObj)
                 continue;
             }
 
-            const auto pair = QPair<QString, QString>{colorObj.value(KEY_COLOR).toString(), colorObj.value(KEY_REGEXP).toString()};
+            const auto pair = QPair<QRegularExpression, QString>{QRegularExpression{colorObj.value(KEY_REGEXP).toString()}, colorObj.value(KEY_COLOR).toString()};
             qDebug() << "found color pair: " << pair;
 
             _colors << pair;
         }
     }
+}
+
+QString ColumnConfig::colorForString(const QString& str) const
+{
+    for(const auto& color : _colors)
+    {
+        const auto regexp = color.first;
+        if( regexp.match(str).hasMatch())
+            return color.second;
+    }
+
+    return {DEFAULT_COLOR};
 }
