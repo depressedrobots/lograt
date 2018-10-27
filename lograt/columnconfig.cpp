@@ -1,8 +1,8 @@
 #include "columnconfig.h"
 
-#include <QJsonObject>
-#include <QJsonArray>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
 
 namespace
 {
@@ -12,26 +12,27 @@ namespace
     const auto KEY_REGEXP = "regexp";
 
     const auto DEFAULT_COLOR = "white";
-}
+} // namespace
 
-void ColumnConfig::setValues(const QJsonObject& jsonObj)
+void ColumnConfig::setValues(const QJsonObject &jsonObj)
 {
-    if( jsonObj.contains(KEY_WIDTH))
+    if (jsonObj.contains(KEY_WIDTH))
         _width = jsonObj.value(KEY_WIDTH).toInt();
 
-    if( jsonObj.contains(KEY_COLORS))
+    if (jsonObj.contains(KEY_COLORS))
     {
         const auto arr = jsonObj.value(KEY_COLORS).toArray();
-        for( const auto& colorObjVal : arr)
+        for (const auto &colorObjVal : arr)
         {
             const auto colorObj = colorObjVal.toObject();
-            if( !colorObj.contains(KEY_COLOR) || !colorObj.contains(KEY_REGEXP))
+            if (!colorObj.contains(KEY_COLOR) || !colorObj.contains(KEY_REGEXP))
             {
                 qDebug() << "incomplete color obj: " << colorObjVal;
                 continue;
             }
 
-            const auto pair = QPair<QRegularExpression, QString>{QRegularExpression{colorObj.value(KEY_REGEXP).toString()}, colorObj.value(KEY_COLOR).toString()};
+            const auto pair = QPair<QRegularExpression, QString>{
+                QRegularExpression{colorObj.value(KEY_REGEXP).toString()}, colorObj.value(KEY_COLOR).toString()};
             qDebug() << "found color pair: " << pair;
 
             _colors << pair;
@@ -39,12 +40,12 @@ void ColumnConfig::setValues(const QJsonObject& jsonObj)
     }
 }
 
-QString ColumnConfig::colorForString(const QString& str) const
+QString ColumnConfig::colorForString(const QString &str) const
 {
-    for(const auto& color : _colors)
+    for (const auto &color : _colors)
     {
         const auto regexp = color.first;
-        if( regexp.match(str).hasMatch())
+        if (regexp.match(str).hasMatch())
             return color.second;
     }
 

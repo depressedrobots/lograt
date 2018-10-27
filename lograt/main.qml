@@ -47,24 +47,18 @@ Window {
 
         itemDelegate: Item {
             clip: true
-            Text {
+            TextEdit {
+                readOnly: true
                 anchors.verticalCenter: parent.verticalCenter
                 color: __tableview.getColorForStr(styleData.column, styleData.value)
-                elide:Text.ElideRight
                 text: styleData.value
+                selectByMouse: true
             }
         }
 
         Component {
             id: columnComponent
             TableViewColumn {}
-        }
-
-        rowDelegate: Item {
-            clip: true
-            Text {
-
-            }
         }
 
         function getColorForStr(columnIndex, string) {

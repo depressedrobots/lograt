@@ -1,14 +1,14 @@
+#include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QDebug>
 #include <QQmlContext>
 
-#include "loglinesmodel.h"
 #include "columnconfig.h"
+#include "loglinesmodel.h"
 
 int main(int argc, char *argv[])
 {
-    if( argc > 2 )
+    if (argc > 2)
     {
         qDebug() << "usage: lograt [FILENAME]";
         return 1;
