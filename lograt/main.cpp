@@ -5,6 +5,7 @@
 
 #include "columnconfig.h"
 #include "loglinesmodel.h"
+#include "rockscroll.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +19,10 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<LogLinesModel>("lograt", 1, 0, "LogLinesModel");
-    qmlRegisterType<ColumnConfig>("lograt", 1, 0, "ColumnConfig");
+    const auto CONTEXT = "lograt";
+    qmlRegisterType<LogLinesModel>(CONTEXT, 1, 0, "LogLinesModel");
+    qmlRegisterType<ColumnConfig>(CONTEXT, 1, 0, "ColumnConfig");
+    qmlRegisterType<RockScroll>(CONTEXT, 1, 0, "RockScroll");
 
     QQmlApplicationEngine engine;
     auto ctx = engine.rootContext();

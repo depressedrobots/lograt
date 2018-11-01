@@ -11,11 +11,17 @@ Window {
     title: qsTr("Lograt")
     color: "black"
 
+
     TableView {
         id: __tableview
+
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.right: __rockscroll.left
+
         frameVisible: false
         sortIndicatorVisible: true
-        anchors.fill: parent
 
         model: LogLinesModel {
             id: __model
@@ -84,6 +90,14 @@ Window {
         }
     }
 
+    RockScroll {
+        id: __rockscroll
+        width: 50
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+    }
+
     DropArea {
         anchors.fill: parent
         onDropped: {
@@ -110,8 +124,8 @@ Window {
     property real golden_ratio_conjugate:0.618033988749895
     property real h: Math.random()
     function randomColor() {
-      h += golden_ratio_conjugate
-      h %= 1
-      return Qt.hsva(h, 0.5, 0.95, 1)
+        h += golden_ratio_conjugate
+        h %= 1
+        return Qt.hsva(h, 0.5, 0.95, 1)
     }
 }
