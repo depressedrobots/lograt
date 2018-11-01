@@ -22,6 +22,8 @@ Window {
 
         frameVisible: false
         sortIndicatorVisible: true
+        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
         model: LogLinesModel {
             id: __model
@@ -92,10 +94,16 @@ Window {
 
     RockScroll {
         id: __rockscroll
+
         width: 50
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
+
+        model: __model
+        contentHeight: __tableview.flickableItem.contentHeight
+        viewportHeight: __tableview.viewport.height
+        viewportY: __tableview.flickableItem.contentY
     }
 
     DropArea {
