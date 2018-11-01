@@ -1,13 +1,14 @@
+#include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QDebug>
 #include <QQmlContext>
 
+#include "columnconfig.h"
 #include "loglinesmodel.h"
 
 int main(int argc, char *argv[])
 {
-    if( argc > 2 )
+    if (argc > 2)
     {
         qDebug() << "usage: lograt [FILENAME]";
         return 1;
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<LogLinesModel>("lograt", 1, 0, "LogLinesModel");
+    qmlRegisterType<ColumnConfig>("lograt", 1, 0, "ColumnConfig");
 
     QQmlApplicationEngine engine;
     auto ctx = engine.rootContext();

@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QFile>
 
+#include "columnconfig.h"
+
 namespace
 {
 }
@@ -14,17 +16,17 @@ LogLinesModel::LogLinesModel(QObject *parent) : QAbstractListModel(parent)
     connect(this, &LogLinesModel::filenameChanged, this, &LogLinesModel::loadFile);
 }
 
-void LogLinesModel::loadFile(const QString& filename)
+void LogLinesModel::loadFile(const QString &filename)
 {
     qDebug() << "loading file: " << filename << " ...";
-    if( !QFile::exists(filename))
+    if (!QFile::exists(filename))
     {
         qDebug() << "file not found";
         return;
     }
 
     QFile file{filename};
-    if( !file.open(QIODevice::ReadOnly))
+    if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "failed to open file";
         return;
@@ -33,21 +35,21 @@ void LogLinesModel::loadFile(const QString& filename)
     QVector<LogLine> newLines;
 
     QTextStream in{&file};
-    while(!in.atEnd())
+    while (!in.atEnd())
     {
         const auto str = in.readLine();
         const auto res = _config.staticColumnsRegexp().match(str);
-        if( !res.hasMatch())
+        if (!res.hasMatch())
             continue;
 
         auto captures = res.capturedTexts();
-        captures.pop_front();   // the first one is the full match, not interesting
+        captures.pop_front(); // the first one is the full match, not interesting
         newLines << captures;
     }
 
     file.close();
 
-    beginInsertRows( QModelIndex(), 0, newLines.count());
+    beginInsertRows(QModelIndex(), 0, newLines.count());
     _lines = newLines;
     endInsertRows();
 }
@@ -56,39 +58,25 @@ QHash<int, QByteArray> LogLinesModel::roleNames() const
 {
     auto roles = QHash<int, QByteArray>{};
     auto count = 0;
-    for(const auto& role : _config.staticColumnsNames())
+    for (const auto col : _config.columns())
     {
-        roles.insert(count, role.toUtf8());
+        roles.insert(count, col->name().toUtf8());
         count++;
     }
 
     return roles;
 }
 
-int LogLinesModel::columnCount(const QModelIndex& /*index*/ ) const
-{
-    return _config.staticColumnsNames().size();
-}
+int LogLinesModel::columnCount(const QModelIndex & /*index*/) const { return _config.columns().size(); }
 
-int LogLinesModel::rowCount(const QModelIndex& /*parent*/) const
-{
-    return _lines.size();
-}
+int LogLinesModel::rowCount(const QModelIndex & /*parent*/) const { return _lines.size(); }
 
-QVariant LogLinesModel::data(const QModelIndex &index, int role) const
-{
-    return {_lines.at(index.row()).at(role)};
-}
+QVariant LogLinesModel::data(const QModelIndex &index, int role) const { return {_lines.at(index.row()).at(role)}; }
 
-QString LogLinesModel::columnName(const int col) const
+ColumnConfig *LogLinesModel::columnConfig(const int col) const
 {
-    return _config.staticColumnsNames().at(col);
-}
+    if (col >= _config.columns().size())
+        return nullptr;
 
-int LogLinesModel::columnWidth(const int index) const
-{
-    if(index < 0 || index >= columnCount())
-        return 0;
-
-    return _config.columnWidths().at(index);
+    return _config.columns().at(col);
 }

@@ -2,30 +2,30 @@
 #define CONFIG_H
 
 #include <QObject>
-#include <QVector>
 #include <QRegularExpression>
+#include <QVector>
+
+class ColumnConfig;
 
 class Config : public QObject
 {
     Q_OBJECT
-public:
+  public:
     explicit Config(QObject *parent = nullptr);
     QString scheme() const { return _scheme; }
     QRegularExpression staticColumnsRegexp() const { return _staticColumnsRegexp; }
-    QStringList staticColumnsNames() const { return _staticColumnsNames; }
-    QVector<int> columnWidths() const { return _columnWidths; }
+    QVector<ColumnConfig *> columns() const { return _columns; }
 
-signals:
+  signals:
     void configLoaded(const bool success);
 
-public slots:
+  public slots:
     void open();
 
-private:
+  private:
     QString _scheme;
     QRegularExpression _staticColumnsRegexp;
-    QStringList _staticColumnsNames;
-    QVector<int> _columnWidths;
+    QVector<ColumnConfig *> _columns;
 };
 
 #endif // CONFIG_H

@@ -1,6 +1,27 @@
 {
 	"scheme": "example",
 	"static_columns_regexp": "(?<level>^\\D{4})(?<timestamp>\\[.+\\])\\s(?<message>.+\\S)\\s+func=(?<func>.+)\\s+obj=(?<obj>\\S+)(?<fields>.*$)",
-	"static_columns_widths": [50, 150, 400, 150, 150, 400]
+	"level": {
+		"width": 50,
+		"colors": [
+			{"color": "red", "regexp":"^ERRO$"},
+			{"color": "yellow", "regexp": "^DEBU$"}
+		]
+	},
+	"timestamp": {
+		"width": 150
+	},
+	"message": {
+		"width": 400
+	},
+	"func": {
+		"width": 150
+	},
+	"obj": {
+		"width": 150
+	},
+	"fields": {
+		"width": 400
+	}
 }
 

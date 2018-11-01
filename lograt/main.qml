@@ -3,6 +3,7 @@ import QtQuick.Window 2.11
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import lograt 1.0
+import QtQml 2.11
 
 Window {
     visible: true
@@ -44,9 +45,25 @@ Window {
             }
         }
 
+        itemDelegate: Item {
+            clip: true
+            TextEdit {
+                readOnly: true
+                anchors.verticalCenter: parent.verticalCenter
+                color: __tableview.getColorForStr(styleData.column, styleData.value)
+                text: styleData.value
+                selectByMouse: true
+            }
+        }
+
         Component {
             id: columnComponent
             TableViewColumn {}
+        }
+
+        function getColorForStr(columnIndex, string) {
+            var config = __model.columnConfig(columnIndex)
+            return config.colorForString(string)
         }
 
         function updateColumns() {
@@ -56,9 +73,13 @@ Window {
 
             for(var i = 0; i < __model.columnCount(0); i++)
             {
-                var col  = __model.columnName(i);
-                var newCol = columnComponent.createObject(__tableview, { "role": col, "title": col, width: __model.columnWidth(i)})
-                __tableview.addColumn(newCol);
+                var colConfig = __model.columnConfig(i)
+                var newCol = columnComponent.createObject(__tableview, {
+                                                              role: colConfig.name,
+                                                              title: colConfig.name,
+                                                              width: colConfig.width
+                                                          })
+                __tableview.addColumn(newCol)
             }
         }
     }
@@ -84,5 +105,13 @@ Window {
             return
 
         __model.filename = filename
+    }
+
+    property real golden_ratio_conjugate:0.618033988749895
+    property real h: Math.random()
+    function randomColor() {
+      h += golden_ratio_conjugate
+      h %= 1
+      return Qt.hsva(h, 0.5, 0.95, 1)
     }
 }
